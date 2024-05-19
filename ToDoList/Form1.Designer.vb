@@ -25,6 +25,8 @@ Partial Class Form1
         Me.TableLayoutPanel1 = New System.Windows.Forms.TableLayoutPanel()
         Me.inputForm = New System.Windows.Forms.TextBox()
         Me.additionButton = New System.Windows.Forms.Button()
+        Me.saveButton = New System.Windows.Forms.Button()
+        Me.loadButton = New System.Windows.Forms.Button()
         Me.SuspendLayout()
         '
         'TableLayoutPanel1
@@ -75,9 +77,9 @@ Partial Class Form1
         '
         Me.inputForm.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.inputForm.Font = New System.Drawing.Font("MS UI Gothic", 14.0!)
-        Me.inputForm.Location = New System.Drawing.Point(37, 520)
+        Me.inputForm.Location = New System.Drawing.Point(63, 520)
         Me.inputForm.Name = "inputForm"
-        Me.inputForm.Size = New System.Drawing.Size(420, 26)
+        Me.inputForm.Size = New System.Drawing.Size(394, 26)
         Me.inputForm.TabIndex = 0
         '
         'additionButton
@@ -89,11 +91,31 @@ Partial Class Form1
         Me.additionButton.Text = "追加"
         Me.additionButton.UseVisualStyleBackColor = True
         '
+        'saveButton
+        '
+        Me.saveButton.Location = New System.Drawing.Point(12, 506)
+        Me.saveButton.Name = "saveButton"
+        Me.saveButton.Size = New System.Drawing.Size(45, 23)
+        Me.saveButton.TabIndex = 2
+        Me.saveButton.Text = "保存"
+        Me.saveButton.UseVisualStyleBackColor = True
+        '
+        'loadButton
+        '
+        Me.loadButton.Location = New System.Drawing.Point(12, 535)
+        Me.loadButton.Name = "loadButton"
+        Me.loadButton.Size = New System.Drawing.Size(45, 23)
+        Me.loadButton.TabIndex = 3
+        Me.loadButton.Text = "読込"
+        Me.loadButton.UseVisualStyleBackColor = True
+        '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 12.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(550, 561)
+        Me.Controls.Add(Me.loadButton)
+        Me.Controls.Add(Me.saveButton)
         Me.Controls.Add(Me.additionButton)
         Me.Controls.Add(Me.inputForm)
         Me.Controls.Add(Me.TableLayoutPanel1)
@@ -107,4 +129,6 @@ Partial Class Form1
     Friend WithEvents TableLayoutPanel1 As TableLayoutPanel
     Friend WithEvents inputForm As TextBox
     Friend WithEvents additionButton As Button
+    Friend WithEvents saveButton As System.Windows.Forms.Button
+    Friend WithEvents loadButton As System.Windows.Forms.Button
 End Class
