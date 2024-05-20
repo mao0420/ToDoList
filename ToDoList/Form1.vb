@@ -14,15 +14,21 @@ Public Class Form1
     Dim outputData As String
     Dim inputData = New List(Of String)()
 
+    Dim inputNothingMessage As Long
     Dim saveMessage As Long
     Dim loadMessage As Long
 
     Private Sub additionButton_Click(sender As Object, e As EventArgs) Handles additionButton.Click
-        stateCheck.add(False)
-        '入力フォームに記載した内容をリストに保存
-        inputList.add(inputForm.Text)
-        reflectionList()
-
+        '追加ボタンをクリックした際の処理
+        If inputForm.Text = "" Then
+            inputNothingMessage = MsgBox("文字が入力されていません。")
+        Else
+            'チェックボックスの項目に1つ追加
+            stateCheck.add(False)
+            '入力フォームに記載した内容をリストに保存
+            inputList.add(inputForm.Text)
+            reflectionList()
+        End If
     End Sub
 
     'リストへ反映させるメソッド。
@@ -31,36 +37,29 @@ Public Class Form1
         ReDim listLabel(inputList.Count - 1)
         ReDim deleteButton(inputList.Count - 1)
 
-        'リストに登録されているコントロールの情報を取得します。
-        For i As Integer = 0 To inputList.Count - 2
-            Dim c0 As CheckBox = TableLayoutPanel1.GetControlFromPosition(0, i)
-            Dim c1 As Label = TableLayoutPanel1.GetControlFromPosition(1, i)
-            If c0 Is Nothing Then
-                Exit For
-            ElseIf c1 Is Nothing Then
-                Exit For
-            Else
-                stateCheck(i) = c0.Checked
-                inputList(i) = c1.Text
-            End If
-        Next
+        getControlList()
 
         '一度パネル上のコントロールを削除してから再度配置する。
         TableLayoutPanel1.Controls.Clear()
 
         'リストに保存されている分だけ行を作成する。
         For i As Integer = 0 To inputList.Count - 1
+            'チェックボックスの設定
             listCheck(i) = New CheckBox
             listCheck(i).Checked = stateCheck(i)
 
+            'ラベルの設定
             listLabel(i) = New Label()
             listLabel(i).Text = inputList(i)
             listLabel(i).Font = New Font("MS UI Gothic", 14)
-            listLabel(i).Size = New Size(400, 26)
+            listLabel(i).Size = New Size(450, 26)
             listLabel(i).BorderStyle = BorderStyle.FixedSingle
 
+            '削除ボタンの設定
             deleteButton(i) = New Button()
             deleteButton(i).Text = "削除"
+            deleteButton(i).Name = "deleteButton" + i.ToString()
+            AddHandler deleteButton(i).Click, AddressOf deleteButton_Click
 
             'チェックボタンを配置
             TableLayoutPanel1.Controls.Add(listCheck(i), 0, i)
@@ -71,6 +70,40 @@ Public Class Form1
         Next
     End Sub
 
+    Private Sub getControlList()
+        'リストに登録されているコントロールの情報を取得します。
+        For i As Integer = 0 To inputList.Count - 2
+            Dim checkboxTemp As CheckBox = TableLayoutPanel1.GetControlFromPosition(0, i)
+            Dim textTemp As Label = TableLayoutPanel1.GetControlFromPosition(1, i)
+            If checkboxTemp Is Nothing Then
+                Exit For
+            ElseIf textTemp Is Nothing Then
+                Exit For
+            Else
+                stateCheck(i) = checkboxTemp.Checked
+                inputList(i) = textTemp.Text
+            End If
+        Next
+    End Sub
+
+    Private Sub deleteButton_Click(ByVal sender As Object, ByVal e As System.EventArgs)
+        '削除ボタンをクリックすると、
+        'ボタンを押した対象行が削除される。
+        Dim deleteButtonEvent As Button = CType(sender, Button)
+
+        Dim deleteArray As Integer = Replace(deleteButtonEvent.Name, "deleteButton", "")
+
+        getControlList()
+
+        stateCheck.RemoveAt(deleteArray)
+        inputList.RemoveAt(deleteArray)
+
+        'チェックボタンを配置
+        TableLayoutPanel1.Controls.Remove(listCheck(deleteArray))
+        '入力フォームの内容を配置
+        TableLayoutPanel1.Controls.Remove(listLabel(deleteArray))
+        reflectionList()
+    End Sub
 
     Private Sub saveButton_Click(sender As Object, e As EventArgs) Handles saveButton.Click
         '保存ボタンをクリックすると、
@@ -131,5 +164,4 @@ Public Class Form1
             End If
         End If
     End Sub
-
 End Class
