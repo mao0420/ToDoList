@@ -1,4 +1,6 @@
-﻿Imports System.Windows.Forms
+﻿Imports System.Diagnostics.Eventing
+Imports System.IO
+Imports System.Windows.Forms
 
 Public Class Form1
 
@@ -109,7 +111,22 @@ Public Class Form1
     Private Sub additionButton_Click(sender As Object, e As EventArgs) Handles additionButton.Click
         '入力フォームに記載した内容をリストに保存
         inputList.add(inputForm.Text)
+        reflectionList()
 
+        'Next
+
+        '上記で作成した行をTableLayoutPanelに反映させる
+        '(最新行以前の内容が表示されない為、修正の必要あり)
+        'For i As Integer = 0 To 2
+        'For k As Integer = 0 To inputList.Count - 1
+        'TableLayoutPanel1.Controls.Add(todoList(i, k), i, k)
+        'Next
+        'Next
+
+    End Sub
+
+    'リストへ反映させるメソッド。
+    Private Sub reflectionList()
         'リストに保存されている分だけ行を作成する。
         'For i As Integer = 0 To inputList.Count - 1
         listLabel1.Text = inputList(0)
@@ -328,29 +345,22 @@ Public Class Form1
             TableLayoutPanel1.Controls.Add(deleteButton30, 2, 29)
         End If
 
-        'Next
-
-        '上記で作成した行をTableLayoutPanelに反映させる
-        '(最新行以前の内容が表示されない為、修正の必要あり)
-        'For i As Integer = 0 To 2
-        'For k As Integer = 0 To inputList.Count - 1
-        'TableLayoutPanel1.Controls.Add(todoList(i, k), i, k)
-        'Next
-        'Next
-
     End Sub
-
-    'リストへ反映させるメソッド。
-    'Private Sub reflectionList
 
 
     Private Sub saveButton_Click(sender As Object, e As EventArgs) Handles saveButton.Click
+        '保存ボタンをクリックすると、
+        '現在リストに表示されているチェックボックスの状態とテキスト内容をテキストファイルに保存する。
+        '保存する際に,でそれぞれを区切る様にする、文末の,は削除する。
         For i As Integer = 0 To inputList.Count - 1
             Dim c0 As CheckBox = TableLayoutPanel1.GetControlFromPosition(0, i)
             Dim c1 As Label = TableLayoutPanel1.GetControlFromPosition(1, i)
             outputData = outputData & c0.Checked & "," & c1.Text & ","
         Next
+        '文末の,を削除する。
+        outputData = outputData.TrimEnd(CType(",", Char))
 
+        '上記で読み込んだ内容を"ToDoList.txt"として保存する。
         Dim outputFile As String
         outputFile = System.IO.Path.Combine(My.Computer.FileSystem.SpecialDirectories.Desktop, "ToDoList.txt")
         My.Computer.FileSystem.WriteAllText(outputFile, outputData, False)
@@ -358,26 +368,32 @@ Public Class Form1
 
 
     Private Sub loadButton_Click(sender As Object, e As EventArgs) Handles loadButton.Click
+        '読込ボタンをクリックすると、
+        'ファイルの選択画面が表示されるため、上記で保存したリストのファイルを選択すると、
+        '保存していた内容がToDoリスト内に反映される。
+        Dim textFilename As String
+
         Dim ofd As New OpenFileDialog()
         ofd.InitialDirectory = My.Computer.FileSystem.SpecialDirectories.Desktop
         ofd.Filter = "テキストファイル(.txt)|*.txt|すべてのファイル(*.*)|*.*"
         ofd.Title = "保存したToDoリストのtxtファイルを選択してください"
+        textFilename = ofd.FileName
 
         'ダイアログを表示する
         If ofd.ShowDialog() = DialogResult.OK Then
             '変数srをSystem.IO.StreamReader型で生成
             Dim sr As System.IO.StreamReader = My.Computer.FileSystem.OpenTextFileReader(ofd.FileName)
             '変数FirstLineをString型で生成
-            Dim FirstLine As String = sr.ReadLine() & vbCrLf & sr.ReadLine()
+            Dim FirstLine As String = sr.ReadLine()
             Dim delimiter As String = ","
-            Dim target As String = "FirstLine"
-
-            inputData.add = target.Split(delimiter)
-
-            For i As Integer = 0 To inputData.Count / 2 - 1
-                '分割して配列に入れた文章をリストに反映させる。
+            Dim target As String = FirstLine
 
 
+            inputData = Split(target, delimiter)
+
+            For i As Integer = 0 To inputData.length / 2 - 1
+                inputList.add(inputData(i))
+                reflectionList()
             Next
         End If
     End Sub
