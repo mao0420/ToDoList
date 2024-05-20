@@ -4,7 +4,7 @@ Imports System.Windows.Forms
 
 Public Class Form1
 
-    'Dim todoList(2, 30) As Object
+    Dim stateCheck = New List(Of String)()
     Dim inputList = New List(Of String)()
 
     Dim listCheck() As CheckBox
@@ -109,6 +109,7 @@ Public Class Form1
     Dim inputData = New List(Of String)()
 
     Private Sub additionButton_Click(sender As Object, e As EventArgs) Handles additionButton.Click
+        stateCheck.add(False)
         '入力フォームに記載した内容をリストに保存
         inputList.add(inputForm.Text)
         reflectionList()
@@ -131,18 +132,31 @@ Public Class Form1
 
     'リストへ反映させるメソッド。
     Private Sub reflectionList()
-        '一度パネル上のコントロールを削除してから再度配置する。
-        TableLayoutPanel1.Controls.Clear()
         ReDim listCheck(inputList.Count - 1)
         ReDim listLabel(inputList.Count - 1)
         ReDim deleteButton(inputList.Count - 1)
 
+        'リストに登録されているコントロールの情報を取得します。
+        For i As Integer = 0 To inputList.Count - 2
+            Dim c0 As CheckBox = TableLayoutPanel1.GetControlFromPosition(0, i)
+            Dim c1 As Label = TableLayoutPanel1.GetControlFromPosition(1, i)
+            stateCheck(i) = c0.Checked
+            inputList(i) = c1.Text
+        Next
+
+        '一度パネル上のコントロールを削除してから再度配置する。
+        TableLayoutPanel1.Controls.Clear()
+
         'リストに保存されている分だけ行を作成する。
         For i As Integer = 0 To inputList.Count - 1
             listCheck(i) = New CheckBox
+            listCheck(i).Checked = stateCheck(i)
 
             listLabel(i) = New Label()
             listLabel(i).Text = inputList(i)
+            listLabel(i).Font = New Font("MS UI Gothic", 14)
+            listLabel(i).Size = New Size(400, 26)
+            listLabel(i).BorderStyle = BorderStyle.FixedSingle
 
             deleteButton(i) = New Button()
             deleteButton(i).Text = "削除"
@@ -153,7 +167,6 @@ Public Class Form1
             TableLayoutPanel1.Controls.Add(listLabel(i), 1, i)
             '削除ボタンを配置
             TableLayoutPanel1.Controls.Add(deleteButton(i), 2, i)
-
         Next
     End Sub
 
@@ -207,4 +220,5 @@ Public Class Form1
             Next
         End If
     End Sub
+
 End Class
