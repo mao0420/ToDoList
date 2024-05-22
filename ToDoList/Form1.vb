@@ -8,8 +8,12 @@ Public Class Form1
     Dim inputList = New List(Of String)()
 
     Dim listCheck() As CheckBox
-    Dim listLabel() As Label
+    Dim listTextbox() As TextBox
     Dim deleteButton() As Button
+
+    Dim columnCheck = 0
+    Dim columnTextbox = 1
+    Dim columnButton = 2
 
     Dim outputData As String
     Dim inputData = New List(Of String)()
@@ -21,7 +25,11 @@ Public Class Form1
     Private Sub additionButton_Click(sender As Object, e As EventArgs) Handles additionButton.Click
         '追加ボタンをクリックした際の処理
         If inputForm.Text = "" Then
-            inputNothingMessage = MsgBox("文字が入力されていません。")
+            MsgBox("文字が入力されていません。")
+        ElseIf Replace(Replace(inputForm.Text, " ", ""), "　", "") = "" Then
+            MsgBox("空白文字のみが入力されています。")
+        ElseIf Len(inputForm.Text) > 30 Then
+            MsgBox("30文字以内で入力してください。")
         Else
             'チェックボックスの項目に1つ追加
             stateCheck.add(False)
@@ -29,12 +37,13 @@ Public Class Form1
             inputList.add(inputForm.Text)
             reflectionList()
         End If
+        inputForm.Text = Nothing
     End Sub
 
     'リストへ反映させるメソッド。
     Private Sub reflectionList()
         ReDim listCheck(inputList.Count - 1)
-        ReDim listLabel(inputList.Count - 1)
+        ReDim listTextbox(inputList.Count - 1)
         ReDim deleteButton(inputList.Count - 1)
 
         getControlList()
@@ -48,12 +57,12 @@ Public Class Form1
             listCheck(i) = New CheckBox
             listCheck(i).Checked = stateCheck(i)
 
-            'ラベルの設定
-            listLabel(i) = New Label()
-            listLabel(i).Text = inputList(i)
-            listLabel(i).Font = New Font("MS UI Gothic", 14)
-            listLabel(i).Size = New Size(450, 26)
-            listLabel(i).BorderStyle = BorderStyle.FixedSingle
+            'テキストボックスの設定
+            listTextbox(i) = New TextBox()
+            listTextbox(i).Text = inputList(i)
+            listTextbox(i).Font = New Font("MS UI Gothic", 14)
+            listTextbox(i).Size = New Size(450, 26)
+            listTextbox(i).BorderStyle = BorderStyle.FixedSingle
 
             '削除ボタンの設定
             deleteButton(i) = New Button()
@@ -62,19 +71,19 @@ Public Class Form1
             AddHandler deleteButton(i).Click, AddressOf deleteButton_Click
 
             'チェックボタンを配置
-            TableLayoutPanel1.Controls.Add(listCheck(i), 0, i)
+            TableLayoutPanel1.Controls.Add(listCheck(i), columnCheck, i)
             '入力フォームの内容を配置
-            TableLayoutPanel1.Controls.Add(listLabel(i), 1, i)
+            TableLayoutPanel1.Controls.Add(listTextbox(i), columnTextbox, i)
             '削除ボタンを配置
-            TableLayoutPanel1.Controls.Add(deleteButton(i), 2, i)
+            TableLayoutPanel1.Controls.Add(deleteButton(i), columnButton, i)
         Next
     End Sub
 
     Private Sub getControlList()
         'リストに登録されているコントロールの情報を取得します。
-        For i As Integer = 0 To inputList.Count - 2
-            Dim checkboxTemp As CheckBox = TableLayoutPanel1.GetControlFromPosition(0, i)
-            Dim textTemp As Label = TableLayoutPanel1.GetControlFromPosition(1, i)
+        For i As Integer = 0 To inputList.Count - 1
+            Dim checkboxTemp As CheckBox = TableLayoutPanel1.GetControlFromPosition(columnCheck, i)
+            Dim textTemp As TextBox = TableLayoutPanel1.GetControlFromPosition(columnTextbox, i)
             If checkboxTemp Is Nothing Then
                 Exit For
             ElseIf textTemp Is Nothing Then
@@ -98,32 +107,49 @@ Public Class Form1
         stateCheck.RemoveAt(deleteArray)
         inputList.RemoveAt(deleteArray)
 
-        'チェックボタンを配置
-        TableLayoutPanel1.Controls.Remove(listCheck(deleteArray))
-        '入力フォームの内容を配置
-        TableLayoutPanel1.Controls.Remove(listLabel(deleteArray))
-        reflectionList()
+        'リストに保存されている分だけ行を作成する。
+        For i As Integer = deleteArray To inputList.Count - 1
+            'チェックボックスの設定
+            listCheck(i).Checked = stateCheck(i)
+
+            'ラベルの設定
+            listTextbox(i).Text = inputList(i)
+            listTextbox(i).Font = New Font("MS UI Gothic", 14)
+            listTextbox(i).Size = New Size(450, 26)
+            listTextbox(i).BorderStyle = BorderStyle.FixedSingle
+        Next
+        '最終行のチェックボタンを削除
+        TableLayoutPanel1.Controls.Remove(listCheck(inputList.Count))
+        '最終行のテキストボックスを削除
+        TableLayoutPanel1.Controls.Remove(listTextbox(inputList.Count))
+        '最終行の削除ボタンを削除
+        TableLayoutPanel1.Controls.Remove(deleteButton(inputList.Count))
     End Sub
 
     Private Sub saveButton_Click(sender As Object, e As EventArgs) Handles saveButton.Click
         '保存ボタンをクリックすると、
         '現在リストに表示されているチェックボックスの状態とテキスト内容をテキストファイルに保存する。
-        saveMessage = MsgBox("現在のリストの状態をデスクトップに保存します。" & vbCrLf & "よろしいですか？", vbYesNo + vbQuestion)
-        If saveMessage = vbYes Then
-            '保存する際に,でそれぞれを区切る様にする、文末の,は削除する。
-            For i As Integer = 0 To inputList.Count - 1
-                Dim c0 As CheckBox = TableLayoutPanel1.GetControlFromPosition(0, i)
-                Dim c1 As Label = TableLayoutPanel1.GetControlFromPosition(1, i)
-                outputData = outputData & c0.Checked & "," & c1.Text & ","
-            Next
-            '文末の,を削除する。
-            outputData = outputData.TrimEnd(CType(",", Char))
 
-            '上記で読み込んだ内容を"ToDoList.txt"として保存する。
-            Dim outputFile As String
-            outputFile = System.IO.Path.Combine(My.Computer.FileSystem.SpecialDirectories.Desktop, "ToDoList.txt")
-            My.Computer.FileSystem.WriteAllText(outputFile, outputData, False)
-            MsgBox("保存が完了しました。")
+        If inputList.Count > 0 Then
+            saveMessage = MsgBox("現在のリストの状態をデスクトップに保存します。" & vbCrLf & "よろしいですか？", vbYesNo + vbQuestion)
+            If saveMessage = vbYes Then
+                '保存する際に,でそれぞれを区切る様にする、文末の,は削除する。
+                For i As Integer = 0 To inputList.Count - 1
+                    Dim c0 As CheckBox = TableLayoutPanel1.GetControlFromPosition(columnCheck, i)
+                    Dim c1 As TextBox = TableLayoutPanel1.GetControlFromPosition(columnTextbox, i)
+                    outputData = outputData & c0.Checked & "," & c1.Text & ","
+                Next
+                '文末の,を削除する。
+                outputData = outputData.TrimEnd(CType(",", Char))
+
+                '上記で読み込んだ内容を"ToDoList.txt"として保存する。
+                Dim outputFile As String
+                outputFile = System.IO.Path.Combine(My.Computer.FileSystem.SpecialDirectories.Desktop, "ToDoList.txt")
+                My.Computer.FileSystem.WriteAllText(outputFile, outputData, False)
+                MsgBox("保存が完了しました。")
+            End If
+        Else
+            MsgBox("リストが空の為、保存できません。")
         End If
     End Sub
 
@@ -144,9 +170,7 @@ Public Class Form1
 
             'ダイアログを表示する
             If ofd.ShowDialog() = DialogResult.OK Then
-                '変数srをSystem.IO.StreamReader型で生成
                 Dim sr As System.IO.StreamReader = My.Computer.FileSystem.OpenTextFileReader(ofd.FileName)
-                '変数FirstLineをString型で生成
                 Dim FirstLine As String = sr.ReadLine()
                 Dim delimiter As String = ","
                 Dim target As String = FirstLine
