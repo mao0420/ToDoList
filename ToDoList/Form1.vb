@@ -42,41 +42,34 @@ Public Class Form1
 
     'リストへ反映させるメソッド。
     Private Sub reflectionList()
-        ReDim listCheck(inputList.Count - 1)
-        ReDim listTextbox(inputList.Count - 1)
-        ReDim deleteButton(inputList.Count - 1)
+        Array.Resize(listCheck, inputList.Count)
+        Array.Resize(listTextbox, inputList.Count)
+        Array.Resize(deleteButton, inputList.Count)
 
-        getControlList()
+        'チェックボックスの設定
+        listCheck(inputList.Count - 1) = New CheckBox
+        listCheck(inputList.Count - 1).Checked = stateCheck(inputList.Count - 1)
 
-        '一度パネル上のコントロールを削除してから再度配置する。
-        TableLayoutPanel1.Controls.Clear()
+        'テキストボックスの設定
+        listTextbox(inputList.Count - 1) = New TextBox()
+        listTextbox(inputList.Count - 1).Text = inputList(inputList.Count - 1)
+        listTextbox(inputList.Count - 1).Font = New Font("MS UI Gothic", 13)
+        listTextbox(inputList.Count - 1).Size = New Size(450, 26)
+        listTextbox(inputList.Count - 1).BorderStyle = BorderStyle.FixedSingle
+        listTextbox(inputList.Count - 1).MaxLength = 30
 
-        'リストに保存されている分だけ行を作成する。
-        For i As Integer = 0 To inputList.Count - 1
-            'チェックボックスの設定
-            listCheck(i) = New CheckBox
-            listCheck(i).Checked = stateCheck(i)
+        '削除ボタンの設定
+        deleteButton(inputList.Count - 1) = New Button()
+        deleteButton(inputList.Count - 1).Text = "削除"
+        deleteButton(inputList.Count - 1).Name = "deleteButton" + (inputList.Count - 1).ToString()
+        AddHandler deleteButton(inputList.Count - 1).Click, AddressOf deleteButton_Click
 
-            'テキストボックスの設定
-            listTextbox(i) = New TextBox()
-            listTextbox(i).Text = inputList(i)
-            listTextbox(i).Font = New Font("MS UI Gothic", 14)
-            listTextbox(i).Size = New Size(450, 26)
-            listTextbox(i).BorderStyle = BorderStyle.FixedSingle
-
-            '削除ボタンの設定
-            deleteButton(i) = New Button()
-            deleteButton(i).Text = "削除"
-            deleteButton(i).Name = "deleteButton" + i.ToString()
-            AddHandler deleteButton(i).Click, AddressOf deleteButton_Click
-
-            'チェックボタンを配置
-            TableLayoutPanel1.Controls.Add(listCheck(i), columnCheck, i)
-            '入力フォームの内容を配置
-            TableLayoutPanel1.Controls.Add(listTextbox(i), columnTextbox, i)
-            '削除ボタンを配置
-            TableLayoutPanel1.Controls.Add(deleteButton(i), columnButton, i)
-        Next
+        'チェックボタンを配置
+        TableLayoutPanel1.Controls.Add(listCheck(inputList.Count - 1), columnCheck, inputList.Count - 1)
+        '入力フォームの内容を配置
+        TableLayoutPanel1.Controls.Add(listTextbox(inputList.Count - 1), columnTextbox, inputList.Count - 1)
+        '削除ボタンを配置
+        TableLayoutPanel1.Controls.Add(deleteButton(inputList.Count - 1), columnButton, inputList.Count - 1)
     End Sub
 
     Private Sub getControlList()
@@ -114,9 +107,10 @@ Public Class Form1
 
             'ラベルの設定
             listTextbox(i).Text = inputList(i)
-            listTextbox(i).Font = New Font("MS UI Gothic", 14)
+            listTextbox(i).Font = New Font("MS UI Gothic", 13)
             listTextbox(i).Size = New Size(450, 26)
             listTextbox(i).BorderStyle = BorderStyle.FixedSingle
+            listTextbox(i).MaxLength = 30
         Next
         '最終行のチェックボタンを削除
         TableLayoutPanel1.Controls.Remove(listCheck(inputList.Count))
