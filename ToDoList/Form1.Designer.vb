@@ -34,6 +34,7 @@ Partial Class Form1
         Me.inputForm.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.inputForm.Font = New System.Drawing.Font("MS UI Gothic", 14.0!)
         Me.inputForm.Location = New System.Drawing.Point(63, 520)
+        Me.inputForm.MaxLength = 30
         Me.inputForm.Name = "inputForm"
         Me.inputForm.Size = New System.Drawing.Size(394, 26)
         Me.inputForm.TabIndex = 0

@@ -22,25 +22,32 @@ Public Class Form1
     Dim saveMessage As Long
     Dim loadMessage As Long
 
+    '追加ボタンクリックメソッド
     Private Sub additionButton_Click(sender As Object, e As EventArgs) Handles additionButton.Click
         '追加ボタンをクリックした際の処理
+        '入力フォームに何も入力していない場合エラーメッセージを表示します。
         If inputForm.Text = "" Then
             MsgBox("文字が入力されていません。")
+            '入力フォームにスペースだけが入っている場合エラーメッセージを表示します。
         ElseIf Replace(Replace(inputForm.Text, " ", ""), "　", "") = "" Then
             MsgBox("空白文字のみが入力されています。")
+            '入力フォームに30文字以上入っている場合エラーメッセージを表示します。
+            '(設定で30文字以上入らないようにしています。)
         ElseIf Len(inputForm.Text) > 30 Then
             MsgBox("30文字以内で入力してください。")
         Else
-            'チェックボックスの項目に1つ追加
+            'チェックボックスのリストにチェックなしの項目を追加
             stateCheck.add(False)
-            '入力フォームに記載した内容をリストに保存
+            '入力フォームに記載した内容をテキストのリストに追加
             inputList.add(inputForm.Text)
+            'リスト反映メソッドを呼び出します。
             reflectionList()
         End If
+        'エラーの有無に関わらず、入力フォームをクリアします。
         inputForm.Text = Nothing
     End Sub
 
-    'リストへ反映させるメソッド。
+    'リスト反映メソッド
     Private Sub reflectionList()
         Array.Resize(listCheck, inputList.Count)
         Array.Resize(listTextbox, inputList.Count)
@@ -72,6 +79,7 @@ Public Class Form1
         TableLayoutPanel1.Controls.Add(deleteButton(inputList.Count - 1), columnButton, inputList.Count - 1)
     End Sub
 
+    'コントロール情報取得メソッド
     Private Sub getControlList()
         'リストに登録されているコントロールの情報を取得します。
         For i As Integer = 0 To inputList.Count - 1
@@ -88,6 +96,7 @@ Public Class Form1
         Next
     End Sub
 
+    '削除ボタンクリックメソッド
     Private Sub deleteButton_Click(ByVal sender As Object, ByVal e As System.EventArgs)
         '削除ボタンをクリックすると、
         'ボタンを押した対象行が削除される。
@@ -120,6 +129,7 @@ Public Class Form1
         TableLayoutPanel1.Controls.Remove(deleteButton(inputList.Count))
     End Sub
 
+    '保存ボタンクリックメソッド
     Private Sub saveButton_Click(sender As Object, e As EventArgs) Handles saveButton.Click
         '保存ボタンをクリックすると、
         '現在リストに表示されているチェックボックスの状態とテキスト内容をテキストファイルに保存する。
@@ -147,7 +157,7 @@ Public Class Form1
         End If
     End Sub
 
-
+    '読込ボタンクリックメソッド
     Private Sub loadButton_Click(sender As Object, e As EventArgs) Handles loadButton.Click
         '読込ボタンをクリックすると、
         'ファイルの選択画面が表示されるため、上記で保存したリストのファイルを選択すると、
@@ -175,9 +185,9 @@ Public Class Form1
                         stateCheck.add(inputData(i))
                     Else
                         inputList.add(inputData(i))
+                        reflectionList()
                     End If
                 Next
-                reflectionList()
                 MsgBox("読込が完了しました。")
             End If
         End If
