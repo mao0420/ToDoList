@@ -22,7 +22,6 @@ Public Class Form1
     '削除ボタン設定用変数
     Dim buttonText = "削除"
     Dim buttonName = "deleteButton"
-    Dim buttonNameNumbers = buttonName + (inputText.Count - 1).ToString()
 
     'リスト配置用の列番号
     Dim columnCheck = 0
@@ -104,7 +103,7 @@ Public Class Form1
         '削除ボタンの設定
         deleteButton(inputText.Count - 1) = New Button()
         deleteButton(inputText.Count - 1).Text = buttonText
-        deleteButton(inputText.Count - 1).Name = buttonNameNumbers
+        deleteButton(inputText.Count - 1).Name = buttonName + (inputText.Count - 1).ToString()
         AddHandler deleteButton(inputText.Count - 1).Click, AddressOf deleteButton_Click
 
         'チェックボタンを配置
