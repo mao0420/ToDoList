@@ -13,20 +13,50 @@ Public Class Form1
     Dim listTextbox() As TextBox
     Dim deleteButton() As Button
 
+    'テキストボックス設定用変数
+    Dim textFont = New Font("MS UI Gothic", 13)
+    Dim textSize = New Size(450, 26)
+    Dim textBorderStyle = BorderStyle.FixedSingle
+    Dim textMaxLength = 30
+
+    '削除ボタン設定用変数
+    Dim buttonText = "削除"
+    Dim buttonName = "deleteButton"
+    Dim buttonNameNumbers = buttonName + (inputText.Count - 1).ToString()
+
     'リスト配置用の列番号
     Dim columnCheck = 0
     Dim columnTextbox = 1
     Dim columnButton = 2
 
-    'ファイル保存時のデータ格納用の変数
-    Dim outputData As String
+    'ファイル保存時のファイル名
+    Dim saveFileName = "ToDoList.txt"
 
     'ファイル読込時のデータ格納用の配列
-    Dim inputData = New List(Of String)()
+    Dim loadData = New List(Of String)()
+
+    'ファイルの保存、読込時の区切り文字
+    Dim textDelimiter = ","
 
     'ポップアップのYes/No入力確認用変数
     Dim saveMessage As Long
     Dim loadMessage As Long
+
+    '読み込み時のダイアログボックスの設定用変数
+    Dim loadDialogFilter = "テキストファイル(.txt)|*.txt|すべてのファイル(*.*)|*.*"
+    Dim loadDialogTitle = "保存したToDoList.txtのテキストファイルを選択してください"
+
+    'メッセージボックスのメッセージ内容
+    Dim messageErrorNotinput = "文字が入力されていません。"
+    Dim messageErrorBlankCharactor = "空白文字のみが入力されています。"
+    Dim messageSaveConfirmation = ("現在のリストの状態をデスクトップに保存します。" & vbCrLf &
+                                   "よろしいですか？")
+    Dim messageSaveComplete = "「ToDoList.txt」の保存が完了しました。"
+    Dim messageSaveListEmpty = "リストが空の為、保存できません。"
+    Dim messageLoadConfirmation = ("読み込まれたリストの項目は、" & vbCrLf &
+                                   "現在表示されているリストの下に追加されます。" & vbCrLf &
+                                    "リストの読込を行いますか？")
+    Dim messageLoadComplete = "読込が完了しました。"
 
     '追加ボタンクリックメソッド
     Private Sub additionButton_Click(sender As Object, e As EventArgs) Handles additionButton.Click
@@ -34,14 +64,10 @@ Public Class Form1
 
         '入力フォームに何も入力していない場合エラーメッセージを表示
         If inputForm.Text = "" Then
-            MsgBox("文字が入力されていません。")
+            MsgBox(messageErrorNotinput)
             '入力フォームにスペースだけが入っている場合エラーメッセージを表示
         ElseIf Replace(Replace(inputForm.Text, " ", ""), "　", "") = "" Then
-            MsgBox("空白文字のみが入力されています。")
-            '入力フォームに30文字以上入っている場合エラーメッセージを表示
-            '(設定で30文字以上入らないようにしています。)
-        ElseIf Len(inputForm.Text) > 30 Then
-            MsgBox("30文字以内で入力してください。")
+            MsgBox(messageErrorBlankCharactor)
         Else
             'チェックボックスの配列にチェックなしの項目を追加
             inputCheck.add(False)
@@ -70,15 +96,15 @@ Public Class Form1
         'テキストボックスの設定
         listTextbox(inputText.Count - 1) = New TextBox()
         listTextbox(inputText.Count - 1).Text = inputText(inputText.Count - 1)
-        listTextbox(inputText.Count - 1).Font = New Font("MS UI Gothic", 13)
-        listTextbox(inputText.Count - 1).Size = New Size(450, 26)
-        listTextbox(inputText.Count - 1).BorderStyle = BorderStyle.FixedSingle
-        listTextbox(inputText.Count - 1).MaxLength = 30
+        listTextbox(inputText.Count - 1).Font = textFont
+        listTextbox(inputText.Count - 1).Size = textSize
+        listTextbox(inputText.Count - 1).BorderStyle = textBorderStyle
+        listTextbox(inputText.Count - 1).MaxLength = textMaxLength
 
         '削除ボタンの設定
         deleteButton(inputText.Count - 1) = New Button()
-        deleteButton(inputText.Count - 1).Text = "削除"
-        deleteButton(inputText.Count - 1).Name = "deleteButton" + (inputText.Count - 1).ToString()
+        deleteButton(inputText.Count - 1).Text = buttonText
+        deleteButton(inputText.Count - 1).Name = buttonNameNumbers
         AddHandler deleteButton(inputText.Count - 1).Click, AddressOf deleteButton_Click
 
         'チェックボタンを配置
@@ -119,7 +145,7 @@ Public Class Form1
         'どの削除ボタンが押されたか判別
         '削除ボタン名の数値を削除対象の行数として使用
         Dim deleteButtonEvent As Button = CType(sender, Button)
-        Dim deleteArray As Integer = Replace(deleteButtonEvent.Name, "deleteButton", "")
+        Dim deleteArray As Integer = Replace(deleteButtonEvent.Name, buttonName, "")
 
         '現在リストに登録されているコントロールの情報を取得
         getControlList()
@@ -150,30 +176,32 @@ Public Class Form1
         '現在リストに表示されているチェックボックスの状態とテキストボックスの内容をテキストファイルに保存
 
         If inputText.Count > 0 Then
-            saveMessage = MsgBox("現在のリストの状態をデスクトップに保存します。" & vbCrLf &
-                                 "よろしいですか？", vbYesNo + vbQuestion)
+            saveMessage = MsgBox(messageSaveConfirmation, vbYesNo + vbQuestion)
             If saveMessage = vbYes Then
 
+                'ファイル保存時のデータ格納用の変数
+                Dim saveData = ""
                 'チェックボックスの状態とテキストボックスの内容を文字列に変換して格納、
                 '格納時にそれぞれ末尾に「,」の区切り文字を追加
                 For i As Integer = 0 To inputText.Count - 1
                     Dim c0 As CheckBox = TableLayoutPanel1.GetControlFromPosition(columnCheck, i)
                     Dim c1 As TextBox = TableLayoutPanel1.GetControlFromPosition(columnTextbox, i)
-                    outputData = outputData & c0.Checked & "," & c1.Text & ","
+                    saveData = saveData & c0.Checked & textDelimiter & c1.Text & textDelimiter
                 Next
 
                 '全ての格納が完了後、文末の「,」を削除
-                outputData = outputData.TrimEnd(CType(",", Char))
+                saveData = saveData.TrimEnd(CType(textDelimiter, Char))
 
                 '上記で読み込んだ内容を"ToDoList.txt"としてデスクトップに保存
                 Dim outputFile As String
-                outputFile = System.IO.Path.Combine(My.Computer.FileSystem.SpecialDirectories.Desktop, "ToDoList.txt")
-                My.Computer.FileSystem.WriteAllText(outputFile, outputData, False)
-                MsgBox("「ToDoList.txt」の保存が完了しました。")
+                outputFile = System.IO.Path.Combine(My.Computer.FileSystem.SpecialDirectories.Desktop, saveFileName)
+                My.Computer.FileSystem.WriteAllText(outputFile, saveData, False)
+                MsgBox(messageSaveComplete)
+
             End If
         Else
             'リストに何も登録されていない場合、エラーメッセージを表示して保存せず終了
-            MsgBox("リストが空の為、保存できません。")
+            MsgBox(messageSaveListEmpty)
         End If
 
     End Sub
@@ -185,41 +213,39 @@ Public Class Form1
         '保存していた内容がToDoリスト内に反映される。
 
         '確認メッセージを表示
-        loadMessage = MsgBox("読み込まれたリストは、" & vbCrLf &
-                             "現在表示されているリストの下に追加されます。" & vbCrLf &
-                             "リストの読込を行います。", vbYesNo + vbQuestion)
+        loadMessage = MsgBox(messageLoadConfirmation, vbYesNo + vbQuestion)
 
         '確認メッセージでYesを押した場合、ファイル選択のダイアログボックスの設定を実施
         If loadMessage = vbYes Then
             Dim ofd As New OpenFileDialog()
             ofd.InitialDirectory = My.Computer.FileSystem.SpecialDirectories.Desktop
-            ofd.Filter = "テキストファイル(.txt)|*.txt|すべてのファイル(*.*)|*.*"
-            ofd.Title = "保存したToDoList.txtのテキストファイルを選択してください"
+            ofd.Filter = loadDialogFilter
+            ofd.Title = loadDialogTitle
 
             '設定したダイアログボックスを表示し、対象ファイルを選択しOKを押すと対象ファイルが読み込まれる為、
             '読み込まれたファイル内容を「,」の区切り文字で分割し配列に格納
             If ofd.ShowDialog() = DialogResult.OK Then
                 Dim sr As System.IO.StreamReader = My.Computer.FileSystem.OpenTextFileReader(ofd.FileName)
                 Dim firstLine As String = sr.ReadLine()
-                Dim delimiter As String = ","
-                inputData = Split(firstLine, delimiter)
+                Dim delimiter As String = textDelimiter
+                loadData = Split(firstLine, delimiter)
 
                 '配列に格納されたチェックボックスの状態とテキストボックスの内容を、
                 'それぞれの配列に格納し1行毎にリストに反映
-                For i As Integer = 0 To inputData.length - 1
+                For i As Integer = 0 To loadData.length - 1
                     If i Mod 2 = 0 Then
-                        inputCheck.add(inputData(i))
+                        inputCheck.add(loadData(i))
                     Else
-                        inputText.add(inputData(i))
+                        inputText.add(loadData(i))
                         'リスト反映メソッドの呼び出し
                         reflectionList()
                     End If
                 Next
 
-                '読み込みが完了したファイルを閉じる
+                '読み込まれたファイルを閉じる
                 sr.Close()
                 '処理が完了した事のメッセージを表示
-                MsgBox("読込が完了しました。")
+                MsgBox(messageLoadComplete)
             End If
         End If
 
