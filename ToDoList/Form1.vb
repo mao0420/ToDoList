@@ -39,8 +39,8 @@ Public Class Form1
     Dim textDelimiter = ","
 
     'ポップアップのYes/No入力確認用変数
-    Dim saveMessage As Long
-    Dim loadMessage As Long
+    Dim saveSelect As Long
+    Dim loadSelect As Long
 
     '読み込み時のダイアログボックスの設定用変数
     Dim loadDialogFilter = "テキストファイル(.txt)|*.txt|すべてのファイル(*.*)|*.*"
@@ -176,8 +176,8 @@ Public Class Form1
         '現在リストに表示されているチェックボックスの状態とテキストボックスの内容をテキストファイルに保存
 
         If inputText.Count > 0 Then
-            saveMessage = MsgBox(messageSaveConfirmation, vbYesNo + vbQuestion)
-            If saveMessage = vbYes Then
+            saveSelect = MsgBox(messageSaveConfirmation, vbYesNo + vbQuestion)
+            If saveSelect = vbYes Then
 
                 'ファイル保存時のデータ格納用の変数
                 Dim saveData = ""
@@ -213,10 +213,10 @@ Public Class Form1
         '保存していた内容がToDoリスト内に反映される。
 
         '確認メッセージを表示
-        loadMessage = MsgBox(messageLoadConfirmation, vbYesNo + vbQuestion)
+        loadSelect = MsgBox(messageLoadConfirmation, vbYesNo + vbQuestion)
 
         '確認メッセージでYesを押した場合、ファイル選択のダイアログボックスの設定を実施
-        If loadMessage = vbYes Then
+        If loadSelect = vbYes Then
             Dim ofd As New OpenFileDialog()
             ofd.InitialDirectory = My.Computer.FileSystem.SpecialDirectories.Desktop
             ofd.Filter = loadDialogFilter
