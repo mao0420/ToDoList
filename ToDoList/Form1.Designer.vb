@@ -22,26 +22,28 @@ Partial Class Form1
     'コード エディターを使って変更しないでください。
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
+        Me.components = New System.ComponentModel.Container()
         Me.inputForm = New System.Windows.Forms.TextBox()
         Me.additionButton = New System.Windows.Forms.Button()
         Me.saveButton = New System.Windows.Forms.Button()
         Me.loadButton = New System.Windows.Forms.Button()
         Me.TableLayoutPanel1 = New System.Windows.Forms.TableLayoutPanel()
+        Me.Timer1 = New System.Windows.Forms.Timer(Me.components)
         Me.SuspendLayout()
         '
         'inputForm
         '
         Me.inputForm.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.inputForm.Font = New System.Drawing.Font("MS UI Gothic", 14.0!)
-        Me.inputForm.Location = New System.Drawing.Point(63, 520)
+        Me.inputForm.Location = New System.Drawing.Point(99, 520)
         Me.inputForm.MaxLength = 30
         Me.inputForm.Name = "inputForm"
-        Me.inputForm.Size = New System.Drawing.Size(394, 26)
+        Me.inputForm.Size = New System.Drawing.Size(593, 26)
         Me.inputForm.TabIndex = 0
         '
         'additionButton
         '
-        Me.additionButton.Location = New System.Drawing.Point(463, 520)
+        Me.additionButton.Location = New System.Drawing.Point(698, 520)
         Me.additionButton.Name = "additionButton"
         Me.additionButton.Size = New System.Drawing.Size(75, 26)
         Me.additionButton.TabIndex = 1
@@ -52,7 +54,7 @@ Partial Class Form1
         '
         Me.saveButton.Location = New System.Drawing.Point(12, 506)
         Me.saveButton.Name = "saveButton"
-        Me.saveButton.Size = New System.Drawing.Size(45, 23)
+        Me.saveButton.Size = New System.Drawing.Size(68, 23)
         Me.saveButton.TabIndex = 2
         Me.saveButton.Text = "保存"
         Me.saveButton.UseVisualStyleBackColor = True
@@ -61,7 +63,7 @@ Partial Class Form1
         '
         Me.loadButton.Location = New System.Drawing.Point(12, 535)
         Me.loadButton.Name = "loadButton"
-        Me.loadButton.Size = New System.Drawing.Size(45, 23)
+        Me.loadButton.Size = New System.Drawing.Size(68, 23)
         Me.loadButton.TabIndex = 3
         Me.loadButton.Text = "読込"
         Me.loadButton.UseVisualStyleBackColor = True
@@ -69,13 +71,16 @@ Partial Class Form1
         'TableLayoutPanel1
         '
         Me.TableLayoutPanel1.AutoScroll = True
-        Me.TableLayoutPanel1.ColumnCount = 3
-        Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 5.0!))
-        Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 85.0!))
-        Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 10.0!))
+        Me.TableLayoutPanel1.ColumnCount = 5
+        Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+        Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+        Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+        Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+        Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
         Me.TableLayoutPanel1.Location = New System.Drawing.Point(0, 0)
         Me.TableLayoutPanel1.Name = "TableLayoutPanel1"
-        Me.TableLayoutPanel1.RowCount = 18
+        Me.TableLayoutPanel1.Padding = New System.Windows.Forms.Padding(0, 0, 30, 30)
+        Me.TableLayoutPanel1.RowCount = 16
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30.0!))
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30.0!))
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30.0!))
@@ -92,33 +97,24 @@ Partial Class Form1
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30.0!))
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30.0!))
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30.0!))
-        Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30.0!))
-        Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30.0!))
-        Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30.0!))
-        Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30.0!))
-        Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30.0!))
-        Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30.0!))
-        Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30.0!))
-        Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30.0!))
-        Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30.0!))
-        Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30.0!))
-        Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30.0!))
-        Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30.0!))
-        Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30.0!))
-        Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30.0!))
-        Me.TableLayoutPanel1.Size = New System.Drawing.Size(550, 500)
+        Me.TableLayoutPanel1.Size = New System.Drawing.Size(800, 500)
         Me.TableLayoutPanel1.TabIndex = 0
+        '
+        'Timer1
+        '
         '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 12.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(550, 561)
+        Me.AutoScroll = True
+        Me.ClientSize = New System.Drawing.Size(800, 561)
         Me.Controls.Add(Me.loadButton)
         Me.Controls.Add(Me.saveButton)
         Me.Controls.Add(Me.additionButton)
         Me.Controls.Add(Me.inputForm)
         Me.Controls.Add(Me.TableLayoutPanel1)
+        Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
         Me.Name = "Form1"
         Me.Text = "ToDoリスト"
         Me.ResumeLayout(False)
@@ -130,4 +126,5 @@ Partial Class Form1
     Friend WithEvents saveButton As System.Windows.Forms.Button
     Friend WithEvents loadButton As System.Windows.Forms.Button
     Friend WithEvents TableLayoutPanel1 As TableLayoutPanel
+    Friend WithEvents Timer1 As Timer
 End Class
