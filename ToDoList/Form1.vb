@@ -113,7 +113,7 @@ Public Class Form1
                     Using reader As MySqlDataReader = cmd.ExecuteReader()
 
                         'データベースにデータがない場合、エラーメッセージを表示して読込を終了
-                        If reader.Read = Nothing Then
+                        If reader.HasRows = False Then
                             MsgBox(errorDatabaseEmpty)
                             Conn.Close()
                             Exit Sub
@@ -598,7 +598,7 @@ Public Class Form1
                         Using reader As MySqlDataReader = cmd.ExecuteReader()
 
                             'データベースにデータがない場合、エラーメッセージを表示して終了
-                            If reader.Read = Nothing Then
+                            If reader.HasRows = False Then
                                 MsgBox(errorDatabaseEmpty)
                                 Conn.Close()
                                 Exit Sub
@@ -684,12 +684,12 @@ Public Class Form1
     'アラーム動作メソッド
     Private Sub Timer1_Tick(sender As Object, e As EventArgs) Handles Timer1.Tick
         My.Computer.Audio.PlaySystemSound(System.Media.SystemSounds.Asterisk)
+        '対象行のアラーム設定をオフに変更
+        dataAlarmbox(enableAlarmArray) = False
         '設定したアラーム時間にメッセージを表示
         MsgBox("「" & listTextbox(enableAlarmArray).Text & "」" & messageAlarmTime)
         'リストの対象行をアラームオフに変更
         listAlarmbox(enableAlarmArray).Text = alarmboxFalse
-        '対象行のアラーム設定をオフに変更
-        dataAlarmbox(enableAlarmArray) = False
         '他に設定されているアラームが無いか確認の為、アラーム更新メソッドへ移行
         updateAlarm(enableAlarmArray)
     End Sub
