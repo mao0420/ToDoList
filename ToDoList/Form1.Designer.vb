@@ -29,6 +29,7 @@ Partial Class Form1
         Me.loadButton = New System.Windows.Forms.Button()
         Me.TableLayoutPanel1 = New System.Windows.Forms.TableLayoutPanel()
         Me.Timer1 = New System.Windows.Forms.Timer(Me.components)
+        Me.Timer2 = New System.Windows.Forms.Timer(Me.components)
         Me.SuspendLayout()
         '
         'inputForm
@@ -103,6 +104,11 @@ Partial Class Form1
         'Timer1
         '
         '
+        'Timer2
+        '
+        Me.Timer2.Enabled = True
+        Me.Timer2.Interval = 86400000
+        '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 12.0!)
@@ -127,4 +133,5 @@ Partial Class Form1
     Friend WithEvents loadButton As System.Windows.Forms.Button
     Friend WithEvents TableLayoutPanel1 As TableLayoutPanel
     Friend WithEvents Timer1 As Timer
+    Friend WithEvents Timer2 As Timer
 End Class

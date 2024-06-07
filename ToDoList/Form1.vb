@@ -389,10 +389,16 @@ Public Class Form1
                     MsgBox("「" & listTextbox(enableAlarmArray).Text & "」" & messageAlarmTime)
                     listAlarmbox(listArray).Text = alarmboxFalse
                     dataAlarmbox(enableAlarmArray) = False
-                Else
+
+                    '時間がかかりすぎる場合オーバーフローになるため、一定以内の日付の場合のみタイマーをセット
+                ElseIf timeToWait.TotalMilliseconds < 2000000000 Then
                     '上記で計算した時刻の数値がプラス(未来日時)の場合、計算結果の数値をタイマーにセットして起動
                     Timer1.Interval = timeToWait.TotalMilliseconds
                     Timer1.Enabled = True
+
+                    '時間がかかりすぎる場合は一度タイマーをオフにして終了
+                Else
+                    dataAlarmbox(enableAlarmArray) = False
                 End If
             End If
         End If
@@ -682,6 +688,14 @@ Public Class Form1
         dataAlarmbox(enableAlarmArray) = False
         '他に設定されているアラームが無いか確認の為、アラーム更新メソッドへ移行
         updateAlarm(enableAlarmArray)
+    End Sub
+
+    'データ更新メソッド
+    Private Sub Timer2_Tick(sender As Object, e As EventArgs) Handles Timer2.Tick
+        'タイマーのオーバーフロー対策にアプリケーションを起動してから24時間毎にアラームを再設定します。
+        If dataAlarmbox.Contains(True) = True Then
+            updateAlarm(enableAlarmArray)
+        End If
     End Sub
 
 End Class
