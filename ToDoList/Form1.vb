@@ -396,9 +396,10 @@ Public Class Form1
                     Timer1.Interval = timeToWait.TotalMilliseconds
                     Timer1.Enabled = True
 
-                    '時間がかかりすぎる場合は一度タイマーをオフにして終了
+                    '時間がかかりすぎる場合は一度仮の時間を入力
                 Else
-                    dataAlarmbox(enableAlarmArray) = False
+                    Timer1.Interval = 2000000000
+                    Timer1.Enabled = True
                 End If
             End If
         End If
