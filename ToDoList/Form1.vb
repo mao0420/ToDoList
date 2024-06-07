@@ -676,6 +676,8 @@ Public Class Form1
         My.Computer.Audio.PlaySystemSound(System.Media.SystemSounds.Asterisk)
         '設定したアラーム時間にメッセージを表示
         MsgBox("「" & listTextbox(enableAlarmArray).Text & "」" & messageAlarmTime)
+        'リストの対象行をアラームオフに変更
+        listAlarmbox(enableAlarmArray).Text = alarmboxFalse
         '対象行のアラーム設定をオフに変更
         dataAlarmbox(enableAlarmArray) = False
         '他に設定されているアラームが無いか確認の為、アラーム更新メソッドへ移行
