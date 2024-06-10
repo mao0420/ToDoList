@@ -42,9 +42,9 @@ Public Class Form1
     Dim alarmtimeName = "alarmtime"
 
     'アラーム起動ボックス設定用変数
-    Dim alarmboxSize = New Size(85, 26)
     Dim alarmboxTrue = "アラームON"
     Dim alarmboxFalse = "アラームOFF"
+    Dim alarmboxSize = New Size(85, 26)
     Dim alarmboxName = "alarmbox"
 
     '削除ボタン設定用変数
@@ -67,20 +67,20 @@ Public Class Form1
     Dim loadSelect As Long
 
     'メッセージボックスのメッセージ内容
-    Dim messageBootAlarmTimeOver = ("上記対象のアラーム時間が過ぎています。" & vbCrLf &
-                                    "対象のアラームをOFFにします。")
-    Dim messageAlarmTime = ("の時間になりました。" & vbCrLf &
-                            "対象のアラームをOFFにします。")
+    Dim messageBootAlarmTimeOver = "上記対象のアラーム時間が過ぎています。" & vbCrLf &
+                                   "対象のアラームをOFFにします。"
+    Dim messageAlarmTime = "の時間になりました。" & vbCrLf &
+                           "対象のアラームをOFFにします。"
     Dim messageErrorNotGetTime = "エラーが発生しました、時刻を取得出来ませんでした。"
     Dim messageErrorNotinput = "文字が入力されていません。"
     Dim messageErrorBlankCharactor = "空白文字のみが入力されています。"
-    Dim messageSaveConfirmation = ("現在のリストの状態をデータベースに保存します。" & vbCrLf &
-                                   "よろしいですか？")
+    Dim messageSaveConfirmation = "現在のリストの状態をデータベースに保存します。" & vbCrLf &
+                                  "よろしいですか？"
     Dim messageSaveComplete = "データベースへの保存が完了しました。"
     Dim messageSaveListEmpty = "何も登録されていない為、保存できません。"
-    Dim messageLoadConfirmation = ("データベースから最後に保存されたリストの状態を読み込みます。" & vbCrLf &
-                                   "読み込みの際に現在表示されているリストは削除されます。" & vbCrLf &
-                                    "リストの読込を行いますか？")
+    Dim messageLoadConfirmation = "データベースから最後に保存されたリストの状態を読み込みます。" & vbCrLf &
+                                  "読み込みの際に現在表示されているリストは削除されます。" & vbCrLf &
+                                  "リストの読込を行いますか？"
     Dim messageLoadComplete = "読込が完了しました。"
 
     Dim errorDatabaseEmpty = "データベースから読み込めるデータがありませんでした"
@@ -99,11 +99,11 @@ Public Class Form1
 
         'データベースへの接続情報を入力
         Using Conn As New MySqlConnection("Database=" + DB_Name _
-                                            + ";Data Source=" + DB_Source _
-                                            + ";Port=" + DB_Port _
-                                            + ";User Id=" + DB_Id _
-                                            + ";Password=" + DB_Pw _
-                                            + ";sqlservermode=True;")
+                                        + ";Data Source=" + DB_Source _
+                                        + ";Port=" + DB_Port _
+                                        + ";User Id=" + DB_Id _
+                                        + ";Password=" + DB_Pw _
+                                        + ";sqlservermode=True;")
             Try
                 'データベースへの接続を開始
                 Conn.Open()
@@ -163,6 +163,7 @@ Public Class Form1
             'データベースへの接続を終了
             Conn.Close()
         End Using
+
     End Sub
 
     '追加ボタンクリックメソッド
@@ -216,29 +217,32 @@ Public Class Form1
             Array.Resize(deleteButton, rowPanel + 1)
 
             'チェックボックスの設定
-            listCheck(rowPanel) = New CheckBox
-            listCheck(rowPanel).Size = checkSize
-            listCheck(rowPanel).Checked = dataCheck(dataCheck.Count - 1)
+            listCheck(rowPanel) = New CheckBox With {
+                .Size = checkSize,
+                .Checked = dataCheck(dataCheck.Count - 1)
+            }
 
             'テキストボックスの設定
-            listTextbox(rowPanel) = New TextBox()
-            listTextbox(rowPanel).Text = dataText(dataText.Count - 1)
-            listTextbox(rowPanel).Font = textFont
-            listTextbox(rowPanel).Size = textSize
-            listTextbox(rowPanel).BorderStyle = textBorderStyle
-            listTextbox(rowPanel).MaxLength = textMaxLength
+            listTextbox(rowPanel) = New TextBox With {
+                .Text = dataText(dataText.Count - 1),
+                .Font = textFont,
+                .Size = textSize,
+                .BorderStyle = textBorderStyle,
+                .MaxLength = textMaxLength
+            }
 
             'アラーム時間の設定
-            listAlarmtime(rowPanel) = New DateTimePicker()
-            listAlarmtime(rowPanel).Text = dataAlarmtime(dataAlarmtime.Count - 1)
-            listAlarmtime(rowPanel).Size = alarmtimeSize
-            listAlarmtime(rowPanel).Format = DateTimePickerFormat.Custom
-            listAlarmtime(rowPanel).CustomFormat = alarmtimeCustomFormat
-            listAlarmtime(rowPanel).Name = alarmtimeName + (rowPanel).ToString()
+            listAlarmtime(rowPanel) = New DateTimePicker With {
+                .Text = dataAlarmtime(dataAlarmtime.Count - 1),
+                .Size = alarmtimeSize,
+                .Format = DateTimePickerFormat.Custom,
+                .CustomFormat = alarmtimeCustomFormat,
+                .Name = alarmtimeName + rowPanel.ToString()
+            }
             AddHandler listAlarmtime(rowPanel).TextChanged, AddressOf alarmTime_TextChanged
 
             'アラーム起動ボックスの設定
-            listAlarmbox(rowPanel) = New ComboBox()
+            listAlarmbox(rowPanel) = New ComboBox
             listAlarmbox(rowPanel).Items.Add(alarmboxFalse)
             listAlarmbox(rowPanel).Items.Add(alarmboxTrue)
             listAlarmbox(rowPanel).DropDownStyle = ComboBoxStyle.DropDownList
@@ -248,14 +252,15 @@ Public Class Form1
                 listAlarmbox(rowPanel).Text = alarmboxFalse
             End If
             listAlarmbox(rowPanel).Size = alarmboxSize
-            listAlarmbox(rowPanel).Name = alarmboxName + (rowPanel).ToString()
+            listAlarmbox(rowPanel).Name = alarmboxName + rowPanel.ToString()
             AddHandler listAlarmbox(rowPanel).SelectedIndexChanged, AddressOf comboBox_SelectedIndexChanged
 
             '削除ボタンの設定
-            deleteButton(rowPanel) = New Button()
-            deleteButton(rowPanel).Text = buttonText
-            deleteButton(rowPanel).Size = buttonSize
-            deleteButton(rowPanel).Name = buttonName + (rowPanel).ToString()
+            deleteButton(rowPanel) = New Button With {
+                .Text = buttonText,
+                .Size = buttonSize,
+                .Name = buttonName + rowPanel.ToString()
+            }
             AddHandler deleteButton(rowPanel).Click, AddressOf deleteButton_Click
 
             'チェックボタンを配置
@@ -279,6 +284,7 @@ Public Class Form1
         Dim tempDelete As Integer = 0
         'リストに表示されているコントロールの情報を取得
         For i As Integer = 0 To listTextbox.Count - 1
+            '削除フラグがONの対象行はスキップ
             If dataDelete(i + tempDelete) = True Then
                 tempDelete = tempDelete + 1
                 i = i - 1
@@ -288,15 +294,10 @@ Public Class Form1
                 Dim textTemp As TextBox = TableLayoutPanel1.GetControlFromPosition(columnTextbox, i)
                 Dim alarmtimeTemp As DateTimePicker = TableLayoutPanel1.GetControlFromPosition(columnAlarmtime, i)
                 Dim alarmboxTemp As ComboBox = TableLayoutPanel1.GetControlFromPosition(columnAlarmBox, i)
-                If checkboxTemp Is Nothing Then
-                    Exit For
-                ElseIf textTemp Is Nothing Then
-                    Exit For
-                ElseIf alarmtimeTemp Is Nothing Then
-                    Exit For
-                ElseIf alarmboxTemp Is Nothing Then
-                    Exit For
-                Else
+                If Not checkboxTemp Is Nothing AndAlso
+                   Not textTemp Is Nothing AndAlso
+                   Not alarmtimeTemp Is Nothing AndAlso
+                   Not alarmboxTemp Is Nothing Then
                     'それぞれの内容が「Nothing」でない場合、それぞれの配列の対象行に反映
                     dataCheck(i + tempDelete) = checkboxTemp.Checked
                     dataText(i + tempDelete) = textTemp.Text
@@ -342,6 +343,7 @@ Public Class Form1
             'アラーム更新メソッドへ移行
             updateAlarm(timeArray)
         End If
+
     End Sub
 
     'アラーム更新メソッド
@@ -489,11 +491,11 @@ Public Class Form1
 
                 'データベースへの接続情報を入力
                 Using Conn As New MySqlConnection("Database=" + DB_Name _
-                                            + ";Data Source=" + DB_Source _
-                                            + ";Port=" + DB_Port _
-                                            + ";User Id=" + DB_Id _
-                                            + ";Password=" + DB_Pw _
-                                            + ";sqlservermode=True;")
+                                                + ";Data Source=" + DB_Source _
+                                                + ";Port=" + DB_Port _
+                                                + ";User Id=" + DB_Id _
+                                                + ";Password=" + DB_Pw _
+                                                + ";sqlservermode=True;")
                     Try
                         'データベースへの接続を開始
                         Conn.Open()
@@ -516,11 +518,11 @@ Public Class Form1
                                        Not dataAlarmbox(i) = reader.GetBoolean(4) OrElse
                                        Not dataDelete(i) = reader.GetBoolean(5) Then
                                         update.Add("UPDATE list SET input_checkbox = " & dataCheck(i) &
-                                               ",input_text = '" & dataText(i) &
-                                               "',alarm_time = '" & dataAlarmtime(i) &
-                                               "',alarm_box = " & dataAlarmbox(i) &
-                                               ",delete_flag = " & dataDelete(i) &
-                                               " WHERE id = " & dataNumber(i))
+                                                    ",input_text = '" & dataText(i) &
+                                                    "',alarm_time = '" & dataAlarmtime(i) &
+                                                    "',alarm_box = " & dataAlarmbox(i) &
+                                                    ",delete_flag = " & dataDelete(i) &
+                                                    " WHERE id = " & dataNumber(i))
                                     End If
                                     i = i + 1
                                 End While
@@ -584,11 +586,11 @@ Public Class Form1
         If loadSelect = vbYes Then
             'データベースへの接続情報を入力
             Using Conn As New MySqlConnection("Database=" + DB_Name _
-                                + ";Data Source=" + DB_Source _
-                                + ";Port=" + DB_Port _
-                                + ";User Id=" + DB_Id _
-                                + ";Password=" + DB_Pw _
-                                + ";sqlservermode=True;")
+                                            + ";Data Source=" + DB_Source _
+                                            + ";Port=" + DB_Port _
+                                            + ";User Id=" + DB_Id _
+                                            + ";Password=" + DB_Pw _
+                                            + ";sqlservermode=True;")
                 Try
                     'データベースへの接続を開始
                     Conn.Open()
@@ -667,7 +669,7 @@ Public Class Form1
                         End Using
                     End Using
                     'MySQLへの接続失敗時のエラー処理
-             　   Catch ex As MySql.Data.MySqlClient.MySqlException
+                Catch ex As MySql.Data.MySqlClient.MySqlException
                     MsgBox(errorDatabaseLoad)
                     Conn.Close()
                     Exit Sub
@@ -692,6 +694,7 @@ Public Class Form1
         listAlarmbox(enableAlarmArray).Text = alarmboxFalse
         '他に設定されているアラームが無いか確認の為、アラーム更新メソッドへ移行
         updateAlarm(enableAlarmArray)
+
     End Sub
 
     'データ更新メソッド
@@ -700,6 +703,7 @@ Public Class Form1
         If dataAlarmbox.Contains(True) = True Then
             updateAlarm(enableAlarmArray)
         End If
+
     End Sub
 
 End Class
